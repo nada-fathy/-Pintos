@@ -4,7 +4,7 @@
 #include <list.h>
 #include "threads/synch.h"
 
-struct lock files_sync_lock;
+//struct lock files_sync_lock;
 struct fd_element
 {
     int fd;                        /*file descriptors ID*/
@@ -13,6 +13,6 @@ struct fd_element
 };
 
 void syscall_init (void);
-int read (int fd, void *buffer, unsigned size);
-int open (const char *file);
+//int read (int fd, void *buffer, unsigned size);
+//int open (const char *file);
 #endif /* userprog/syscall.h */
