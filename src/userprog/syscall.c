@@ -211,37 +211,28 @@ static void read_wrapper (struct intr_frame *f,void* esp){
 static int read(int fd, void *buffer, unsigned size){
 
     int bytes_read = -1;
-    lock_acquire(&files_sync_lock);
     if(fd == 0)     //keyboard read
     {
-        //bytes_read = input_getc();
-        for (int i = 0; i != size; ++i){
-            *(uint8_t *)(buffer + i) = input_getc ();
-        }
-      bytes_read = size;
-      lock_release(&files_sync_lock);
-      return bytes_read;
+        bytes_read = input_getc();
     }
     else if(fd > 0)     //file read
     {
         struct fd_element *fd_elem = get_fd(fd);
         if(fd_elem == NULL || buffer == NULL)
         {
-            lock_release(&files_sync_lock);
             return -1;
         }
         //get the file
         struct file *file = fd_elem->file;
-        //lock_acquire(&files_sync_lock);
+        lock_acquire(&files_sync_lock);
         bytes_read = file_read(file, buffer, size);
-        //lock_release(&files_sync_lock);
+        lock_release(&files_sync_lock);
         if(bytes_read < (int)size && bytes_read != 0)
         {
             //some error happened
             bytes_read = -1;
         }
     }
-    lock_release(&files_sync_lock);
     return bytes_read;
 }
 
